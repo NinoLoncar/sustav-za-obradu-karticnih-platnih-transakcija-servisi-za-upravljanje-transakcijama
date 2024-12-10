@@ -22,7 +22,7 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<ApiResponse<TransactionPageData>> getTransactions( @RequestParam(required = false) Integer page) {
+    public ResponseEntity<ApiResponse<TransactionPageData>> getTransactions(@RequestParam(required = false) Integer page) {
         TransactionPageData transactionPageData = transactionService.getTransactions(page);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transactions successfully fetched", transactionPageData));

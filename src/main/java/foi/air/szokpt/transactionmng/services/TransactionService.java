@@ -25,7 +25,7 @@ public class TransactionService {
         page = determinePageNumber(page, pageSize);
         return getTransactionsByPage(page, pageSize);
     }
-    
+
     private int determinePageNumber(int page, int pageSize) {
         long totalItems = transactionRepository.count();
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);
