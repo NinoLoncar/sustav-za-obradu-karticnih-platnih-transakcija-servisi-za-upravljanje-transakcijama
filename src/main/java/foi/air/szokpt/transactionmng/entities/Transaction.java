@@ -29,8 +29,27 @@ public class Transaction {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private Timestamp transactionTimestamp;
 
+    @Column(name = "masked_pan", nullable = false)
+    private String maskedPan;
+
+    @Column(name = "pin_used", nullable = false)
+    private Boolean pinUsed;
+
     @Column(name = "response_code", nullable = false)
     private String responseCode;
+
+    public Transaction(BigDecimal amount, String currency,
+                       String trxType, String cardBrand, Timestamp transactionTimestamp,
+                       String maskedPan, Boolean pinUsed, String responseCode) {
+        this.amount = amount;
+        this.currency = currency;
+        this.trxType = trxType;
+        this.cardBrand = cardBrand;
+        this.transactionTimestamp = transactionTimestamp;
+        this.maskedPan = maskedPan;
+        this.pinUsed = pinUsed;
+        this.responseCode = responseCode;
+    }
 
     public Integer getId() {
         return id;
@@ -78,6 +97,22 @@ public class Transaction {
 
     public void setTransactionTimestamp(Timestamp transactionTimestamp) {
         this.transactionTimestamp = transactionTimestamp;
+    }
+
+    public String getMaskedPan() {
+        return maskedPan;
+    }
+
+    public void setMaskedPan(String maskedPan) {
+        this.maskedPan = maskedPan;
+    }
+
+    public Boolean getPinUsed() {
+        return pinUsed;
+    }
+
+    public void setPinUsed(Boolean pinUsed) {
+        this.pinUsed = pinUsed;
     }
 
     public String getResponseCode() {
