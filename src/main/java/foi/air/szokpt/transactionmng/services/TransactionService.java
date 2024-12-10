@@ -13,23 +13,24 @@ import java.util.List;
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
+    final int pageSize = 15;
 
     public TransactionService(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 
+    @SuppressWarnings("ReassignedVariable")
     public TransactionPageData getTransactions(Integer page) {
-        final int pageSize = 15;
-        long totalItems = transactionRepository.count();
-        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-        List<Transaction> transactions;
-        if (page == null) {
-            return getAllTransactions();
-        }
-        page = Math.max(1, Math.min(page, totalPages));
+        if (page == null) return getAllTransactions();
+        page = determinePageNumber(page, pageSize);
         return getTransactionsByPage(page, pageSize);
     }
-
+    
+    private int determinePageNumber(int page, int pageSize) {
+        long totalItems = transactionRepository.count();
+        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+        return Math.max(1, Math.min(page, totalPages));
+    }
 
     private TransactionPageData getAllTransactions() {
         List<Transaction> allTransactions = transactionRepository.findAll();
