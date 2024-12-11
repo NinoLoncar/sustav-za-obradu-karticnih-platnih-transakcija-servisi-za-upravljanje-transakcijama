@@ -31,7 +31,7 @@ public class TransactionService {
     }
 
     private TransactionPageData getTransactionsByPage(int page, int pageSize) {
-        int pageIndex = determinePageNumber(page, pageSize);
+        int pageIndex = calculatePageIndex(page, pageSize);
         int pageNumber = pageIndex - 1;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Transaction> transactionPage = transactionRepository.findAll(pageable);
@@ -42,7 +42,7 @@ public class TransactionService {
         );
     }
 
-    private int determinePageNumber(int page, int pageSize) {
+    private int calculatePageIndex(int page, int pageSize) {
         long totalItems = transactionRepository.count();
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);
         return Math.max(1, Math.min(page, totalPages));
