@@ -30,5 +30,10 @@ public class TransactionSpecs {
                 );
     }
 
+    public static Specification<Transaction> afterDateTime(LocalDateTime after) {
+        return (root, query, builder) ->
+                after == null ? builder.conjunction() : builder.greaterThanOrEqualTo(
+                        root.get("transactionTimestamp"), after
+                );
     }
 }

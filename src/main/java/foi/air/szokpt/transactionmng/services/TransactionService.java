@@ -31,11 +31,13 @@ public class TransactionService {
             Integer page,
             CardBrand cardBrand,
             TrxType trxType,
-            LocalDateTime before) {
+            LocalDateTime before,
+            LocalDateTime after) {
         Specification<Transaction> spec = Specification
                 .where(TransactionSpecs.hasCardBrand(cardBrand))
                 .and(TransactionSpecs.hasTrxType(trxType))
-                .and(TransactionSpecs.beforeDateTime(before));
+                .and(TransactionSpecs.beforeDateTime(before))
+                .and(TransactionSpecs.afterDateTime(after));
         if (page == null) return getAllTransactions(spec);
         return getTransactionsByPage(page, pageSize, spec);
     }
