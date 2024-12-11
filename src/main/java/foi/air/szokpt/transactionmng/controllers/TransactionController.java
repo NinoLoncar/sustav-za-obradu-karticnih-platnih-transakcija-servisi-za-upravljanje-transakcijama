@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @RestController
@@ -32,9 +33,10 @@ public class TransactionController {
             @RequestParam(name = "card_brand", required = false) CardBrand cardBrand,
             @RequestParam(name = "trx_type", required = false) TrxType trxType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime before,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime after) {
+            @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime after,
+            @RequestParam(required = false, name = "amount_greater_than") BigDecimal amountGreaterThan) {
         TransactionPageData transactionPageData = transactionService.getTransactions(
-                page, cardBrand, trxType, before, after);
+                page, cardBrand, trxType, before, after, amountGreaterThan);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transactions successfully fetched", transactionPageData));
     }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,12 +33,14 @@ public class TransactionService {
             CardBrand cardBrand,
             TrxType trxType,
             LocalDateTime before,
-            LocalDateTime after) {
+            LocalDateTime after,
+            BigDecimal amountGreaterThan) {
         Specification<Transaction> spec = Specification
                 .where(TransactionSpecs.hasCardBrand(cardBrand))
                 .and(TransactionSpecs.hasTrxType(trxType))
                 .and(TransactionSpecs.beforeDateTime(before))
-                .and(TransactionSpecs.afterDateTime(after));
+                .and(TransactionSpecs.afterDateTime(after)
+                        .and(TransactionSpecs.amountGreaterThan(amountGreaterThan)));
         if (page == null) return getAllTransactions(spec);
         return getTransactionsByPage(page, pageSize, spec);
     }

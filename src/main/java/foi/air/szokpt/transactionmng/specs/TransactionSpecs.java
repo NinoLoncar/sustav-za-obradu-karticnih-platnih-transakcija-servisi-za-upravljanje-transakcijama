@@ -5,6 +5,7 @@ import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.enums.TrxType;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class TransactionSpecs {
@@ -34,6 +35,14 @@ public class TransactionSpecs {
         return (root, query, builder) ->
                 after == null ? builder.conjunction() : builder.greaterThanOrEqualTo(
                         root.get("transactionTimestamp"), after
+                );
+    }
+
+    public static Specification<Transaction> amountGreaterThan(
+            BigDecimal amountGreaterThan) {
+        return (root, query, builder) ->
+                amountGreaterThan == null ? builder.conjunction() : builder.greaterThanOrEqualTo(
+                        root.get("amount"), amountGreaterThan
                 );
     }
 }
