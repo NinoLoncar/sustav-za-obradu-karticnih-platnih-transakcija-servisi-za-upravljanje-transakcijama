@@ -7,7 +7,7 @@ import foi.air.szokpt.transactionmng.enums.TrxType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
@@ -39,7 +39,7 @@ public class Transaction {
 
     @Column(name = "transaction_timestamp", nullable = false)
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    private Timestamp transactionTimestamp;
+    private LocalDateTime transactionTimestamp;
 
     @Column(name = "masked_pan", nullable = false)
     private String maskedPan;
@@ -53,11 +53,12 @@ public class Transaction {
     @Column(name = "processed", nullable = false)
     private Boolean processed;
 
-    public Transaction() {}
+    public Transaction() {
+    }
 
     public Transaction(BigDecimal amount, String currency,
                        TrxType trxType, Integer installmentsNumber, InstallmentsCreditor installmentsCreditor,
-                       CardBrand cardBrand, Timestamp transactionTimestamp,
+                       CardBrand cardBrand, LocalDateTime transactionTimestamp,
                        String maskedPan, Boolean pinUsed, String responseCode, Boolean processed) {
         this.amount = amount;
         this.currency = currency;
@@ -112,12 +113,12 @@ public class Transaction {
         this.installmentsNumber = installmentsNumber;
     }
 
-    public InstallmentsCreditor getInstallmentsCreditor() {
-        return installmentsCreditor;
-    }
-
     public void setInstallmentsNumber(InstallmentsCreditor installmentsCreditor) {
         this.installmentsCreditor = installmentsCreditor;
+    }
+
+    public InstallmentsCreditor getInstallmentsCreditor() {
+        return installmentsCreditor;
     }
 
     public CardBrand getCardBrand() {
@@ -128,11 +129,11 @@ public class Transaction {
         this.cardBrand = cardBrand;
     }
 
-    public Timestamp getTransactionTimestamp() {
+    public LocalDateTime getTransactionTimestamp() {
         return transactionTimestamp;
     }
 
-    public void setTransactionTimestamp(Timestamp transactionTimestamp) {
+    public void setTransactionTimestamp(LocalDateTime transactionTimestamp) {
         this.transactionTimestamp = transactionTimestamp;
     }
 

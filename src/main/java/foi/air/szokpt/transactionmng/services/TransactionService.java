@@ -6,16 +6,20 @@ import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.enums.TrxType;
 import foi.air.szokpt.transactionmng.repositories.TransactionRepository;
 import foi.air.szokpt.transactionmng.specs.TransactionSpecs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class TransactionService {
+    private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
     final int pageSize = 15;
     private final TransactionRepository transactionRepository;
 
@@ -26,10 +30,12 @@ public class TransactionService {
     public TransactionPageData getTransactions(
             Integer page,
             CardBrand cardBrand,
-            TrxType trxType) {
+            TrxType trxType,
+            LocalDateTime before) {
         Specification<Transaction> spec = Specification
                 .where(TransactionSpecs.hasCardBrand(cardBrand))
-                .and(TransactionSpecs.hasTrxType(trxType));
+                .and(TransactionSpecs.hasTrxType(trxType))
+                .and(TransactionSpecs.beforeDateTime(before));
         if (page == null) return getAllTransactions(spec);
         return getTransactionsByPage(page, pageSize, spec);
     }
