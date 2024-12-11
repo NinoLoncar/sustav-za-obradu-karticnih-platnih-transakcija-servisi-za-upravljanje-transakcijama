@@ -1,6 +1,9 @@
 package foi.air.szokpt.transactionmng.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import foi.air.szokpt.transactionmng.enums.CardBrand;
+import foi.air.szokpt.transactionmng.enums.InstallmentsCreditor;
+import foi.air.szokpt.transactionmng.enums.TrxType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -20,10 +23,19 @@ public class Transaction {
     private String currency;
 
     @Column(name = "trx_type", nullable = false)
-    private String trxType;
+    @Enumerated(EnumType.STRING)
+    private TrxType trxType;
+
+    @Column(name = "installments_number", nullable = false)
+    private Integer installmentsNumber;
+
+    @Column(name = "installments_creditor", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private InstallmentsCreditor installmentsCreditor;
 
     @Column(name = "card_brand", nullable = false)
-    private String cardBrand;
+    @Enumerated(EnumType.STRING)
+    private CardBrand cardBrand;
 
     @Column(name = "transaction_timestamp", nullable = false)
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -38,17 +50,26 @@ public class Transaction {
     @Column(name = "response_code", nullable = false)
     private String responseCode;
 
+    @Column(name = "was_processed", nullable = false)
+    private Boolean wasProcessed;
+
+    public Transaction() {}
+
     public Transaction(BigDecimal amount, String currency,
-                       String trxType, String cardBrand, Timestamp transactionTimestamp,
-                       String maskedPan, Boolean pinUsed, String responseCode) {
+                       TrxType trxType, Integer installmentsNumber, InstallmentsCreditor installmentsCreditor,
+                       CardBrand cardBrand, Timestamp transactionTimestamp,
+                       String maskedPan, Boolean pinUsed, String responseCode, Boolean wasProcessed) {
         this.amount = amount;
         this.currency = currency;
         this.trxType = trxType;
+        this.installmentsNumber = installmentsNumber;
+        this.installmentsCreditor = installmentsCreditor;
         this.cardBrand = cardBrand;
         this.transactionTimestamp = transactionTimestamp;
         this.maskedPan = maskedPan;
         this.pinUsed = pinUsed;
         this.responseCode = responseCode;
+        this.wasProcessed = wasProcessed;
     }
 
     public Integer getId() {
@@ -75,19 +96,35 @@ public class Transaction {
         this.currency = currency;
     }
 
-    public String getTrxType() {
+    public TrxType getTrxType() {
         return trxType;
     }
 
-    public void setTrxType(String trxType) {
+    public void setTrxType(TrxType trxType) {
         this.trxType = trxType;
     }
 
-    public String getCardBrand() {
+    public Integer getInstallmentsNumber() {
+        return installmentsNumber;
+    }
+
+    public void setInstallmentsNumber(Integer installmentsNumber) {
+        this.installmentsNumber = installmentsNumber;
+    }
+
+    public InstallmentsCreditor getInstallmentsCreditor() {
+        return installmentsCreditor;
+    }
+
+    public void setInstallmentsNumber(InstallmentsCreditor installmentsCreditor) {
+        this.installmentsCreditor = installmentsCreditor;
+    }
+
+    public CardBrand getCardBrand() {
         return cardBrand;
     }
 
-    public void setCardBrand(String cardBrand) {
+    public void setCardBrand(CardBrand cardBrand) {
         this.cardBrand = cardBrand;
     }
 
@@ -121,5 +158,13 @@ public class Transaction {
 
     public void setResponseCode(String responseCode) {
         this.responseCode = responseCode;
+    }
+
+    public Boolean getWasProcessed() {
+        return wasProcessed;
+    }
+
+    public void setWasProcessed(Boolean wasProcessed) {
+        this.wasProcessed = wasProcessed;
     }
 }
