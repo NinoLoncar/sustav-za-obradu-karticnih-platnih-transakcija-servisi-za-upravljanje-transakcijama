@@ -50,15 +50,15 @@ public class Transaction {
     @Column(name = "response_code", nullable = false)
     private String responseCode;
 
-    @Column(name = "was_processed", nullable = false)
-    private Boolean wasProcessed;
+    @Column(name = "processed", nullable = false)
+    private Boolean processed;
 
     public Transaction() {}
 
     public Transaction(BigDecimal amount, String currency,
                        TrxType trxType, Integer installmentsNumber, InstallmentsCreditor installmentsCreditor,
                        CardBrand cardBrand, Timestamp transactionTimestamp,
-                       String maskedPan, Boolean pinUsed, String responseCode, Boolean wasProcessed) {
+                       String maskedPan, Boolean pinUsed, String responseCode, Boolean processed) {
         this.amount = amount;
         this.currency = currency;
         this.trxType = trxType;
@@ -69,7 +69,7 @@ public class Transaction {
         this.maskedPan = maskedPan;
         this.pinUsed = pinUsed;
         this.responseCode = responseCode;
-        this.wasProcessed = wasProcessed;
+        this.processed = processed;
     }
 
     public Integer getId() {
@@ -160,11 +160,11 @@ public class Transaction {
         this.responseCode = responseCode;
     }
 
-    public Boolean getWasProcessed() {
-        return wasProcessed;
+    public Boolean getProcessed() {
+        return processed;
     }
 
-    public void setWasProcessed(Boolean wasProcessed) {
-        this.wasProcessed = wasProcessed;
+    public void setProcessed(Boolean wasProcessed) {
+        this.processed = wasProcessed;
     }
 }
