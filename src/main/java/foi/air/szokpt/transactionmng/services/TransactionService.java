@@ -22,23 +22,17 @@ public class TransactionService {
     @SuppressWarnings("ReassignedVariable")
     public TransactionPageData getTransactions(Integer page) {
         if (page == null) return getAllTransactions();
-        page = determinePageNumber(page, pageSize);
         return getTransactionsByPage(page, pageSize);
-    }
-
-    private int determinePageNumber(int page, int pageSize) {
-        long totalItems = transactionRepository.count();
-        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-        return Math.max(1, Math.min(page, totalPages));
     }
 
     private TransactionPageData getAllTransactions() {
         List<Transaction> allTransactions = transactionRepository.findAll();
-        return new TransactionPageData(allTransactions, 1, 1);
+        return new TransactionPageData(allTransactions, 0, 0);
     }
 
     private TransactionPageData getTransactionsByPage(int page, int pageSize) {
-        int pageNumber = page - 1;
+        int pageIndex = determinePageNumber(page, pageSize);
+        int pageNumber = pageIndex - 1;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Transaction> transactionPage = transactionRepository.findAll(pageable);
         return new TransactionPageData(
@@ -46,5 +40,11 @@ public class TransactionService {
                 transactionPage.getNumber() + 1,
                 transactionPage.getTotalPages()
         );
+    }
+
+    private int determinePageNumber(int page, int pageSize) {
+        long totalItems = transactionRepository.count();
+        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+        return Math.max(1, Math.min(page, totalPages));
     }
 }
