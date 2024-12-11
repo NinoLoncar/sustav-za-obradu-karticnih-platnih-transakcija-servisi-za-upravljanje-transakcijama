@@ -3,6 +3,7 @@ package foi.air.szokpt.transactionmng.services;
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
 import foi.air.szokpt.transactionmng.entities.Transaction;
 import foi.air.szokpt.transactionmng.enums.CardBrand;
+import foi.air.szokpt.transactionmng.enums.TrxType;
 import foi.air.szokpt.transactionmng.repositories.TransactionRepository;
 import foi.air.szokpt.transactionmng.specs.TransactionSpecs;
 import org.springframework.data.domain.Page;
@@ -22,9 +23,13 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
-    public TransactionPageData getTransactions(Integer page, CardBrand cardBrand) {
+    public TransactionPageData getTransactions(
+            Integer page,
+            CardBrand cardBrand,
+            TrxType trxType) {
         Specification<Transaction> spec = Specification
-                .where(TransactionSpecs.hasCardBrand(cardBrand));
+                .where(TransactionSpecs.hasCardBrand(cardBrand))
+                .and(TransactionSpecs.hasTrxType(trxType));
         if (page == null) return getAllTransactions(spec);
         return getTransactionsByPage(page, pageSize, spec);
     }

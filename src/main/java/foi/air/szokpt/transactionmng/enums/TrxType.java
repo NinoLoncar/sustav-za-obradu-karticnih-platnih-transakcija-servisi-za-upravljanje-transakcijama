@@ -6,5 +6,6 @@ public enum TrxType {
     void_sale,
     void_refund,
     reversal_sale,
-    reversal_refund
+    reversal_refund,
+    invalid
 }
