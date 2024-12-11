@@ -45,4 +45,12 @@ public class TransactionSpecs {
                         root.get("amount"), amountGreaterThan
                 );
     }
+
+    public static Specification<Transaction> amountLessThan(
+            BigDecimal amountLessThan) {
+        return (root, query, builder) ->
+                amountLessThan == null ? builder.conjunction() : builder.lessThanOrEqualTo(
+                        root.get("amount"), amountLessThan
+                );
+    }
 }

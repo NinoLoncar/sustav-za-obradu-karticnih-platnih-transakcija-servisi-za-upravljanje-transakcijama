@@ -34,13 +34,17 @@ public class TransactionService {
             TrxType trxType,
             LocalDateTime before,
             LocalDateTime after,
-            BigDecimal amountGreaterThan) {
+            BigDecimal amountGreaterThan,
+            BigDecimal amountLessThan) {
+
         Specification<Transaction> spec = Specification
                 .where(TransactionSpecs.hasCardBrand(cardBrand))
                 .and(TransactionSpecs.hasTrxType(trxType))
                 .and(TransactionSpecs.beforeDateTime(before))
                 .and(TransactionSpecs.afterDateTime(after)
-                        .and(TransactionSpecs.amountGreaterThan(amountGreaterThan)));
+                        .and(TransactionSpecs.amountGreaterThan(amountGreaterThan))
+                        .and(TransactionSpecs.amountLessThan(amountLessThan))
+                );
         if (page == null) return getAllTransactions(spec);
         return getTransactionsByPage(page, pageSize, spec);
     }

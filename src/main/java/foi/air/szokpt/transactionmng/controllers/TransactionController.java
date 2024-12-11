@@ -34,9 +34,10 @@ public class TransactionController {
             @RequestParam(name = "trx_type", required = false) TrxType trxType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime before,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime after,
-            @RequestParam(required = false, name = "amount_greater_than") BigDecimal amountGreaterThan) {
+            @RequestParam(required = false, name = "amount_greater_than") BigDecimal amountGreaterThan,
+            @RequestParam(required = false, name = "amount_less_than") BigDecimal amountLessThan) {
         TransactionPageData transactionPageData = transactionService.getTransactions(
-                page, cardBrand, trxType, before, after, amountGreaterThan);
+                page, cardBrand, trxType, before, after, amountGreaterThan, amountLessThan);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transactions successfully fetched", transactionPageData));
     }
