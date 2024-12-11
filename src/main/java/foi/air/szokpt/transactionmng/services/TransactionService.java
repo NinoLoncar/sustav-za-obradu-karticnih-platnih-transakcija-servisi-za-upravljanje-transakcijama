@@ -2,38 +2,49 @@ package foi.air.szokpt.transactionmng.services;
 
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
 import foi.air.szokpt.transactionmng.entities.Transaction;
+import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.repositories.TransactionRepository;
+import foi.air.szokpt.transactionmng.specs.TransactionSpecs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TransactionService {
-    private final TransactionRepository transactionRepository;
     final int pageSize = 15;
+    private final TransactionRepository transactionRepository;
 
     public TransactionService(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 
-    public TransactionPageData getTransactions(Integer page) {
-        if (page == null) return getAllTransactions();
-        return getTransactionsByPage(page, pageSize);
+    public TransactionPageData getTransactions(Integer page, CardBrand cardBrand) {
+        Specification<Transaction> spec = Specification
+                .where(TransactionSpecs.hasCardBrand(cardBrand));
+        if (page == null) return getAllTransactions(spec);
+        return getTransactionsByPage(page, pageSize, spec);
     }
 
-    private TransactionPageData getAllTransactions() {
-        List<Transaction> allTransactions = transactionRepository.findAll();
+    private TransactionPageData getAllTransactions(
+            Specification<Transaction> spec) {
+        List<Transaction> allTransactions = transactionRepository.findAll(spec);
         return new TransactionPageData(allTransactions, 0, 0);
     }
 
-    private TransactionPageData getTransactionsByPage(int page, int pageSize) {
-        int pageIndex = calculatePageIndex(page, pageSize);
-        int pageNumber = pageIndex - 1;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<Transaction> transactionPage = transactionRepository.findAll(pageable);
+    private TransactionPageData getTransactionsByPage(
+            int page,
+            int pageSize,
+            Specification<Transaction> spec) {
+
+        int pageNumber = calculatePageIndex(page, pageSize);
+        int pageIndex = pageNumber - 1;
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+        Page<Transaction> transactionPage = transactionRepository
+                .findAll(spec, pageable);
         return new TransactionPageData(
                 transactionPage.getContent(),
                 transactionPage.getNumber() + 1,

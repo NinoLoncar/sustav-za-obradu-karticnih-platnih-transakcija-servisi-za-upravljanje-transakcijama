@@ -2,6 +2,7 @@ package foi.air.szokpt.transactionmng.controllers;
 
 import foi.air.szokpt.transactionmng.dtos.responses.ApiResponse;
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
+import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.services.TransactionService;
 import foi.air.szokpt.transactionmng.util.ApiResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,10 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<ApiResponse<TransactionPageData>> getTransactions(@RequestParam(required = false) Integer page) {
-        TransactionPageData transactionPageData = transactionService.getTransactions(page);
+    public ResponseEntity<ApiResponse<TransactionPageData>> getTransactions(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(name = "card_brand", required = false) CardBrand cardBrand) {
+        TransactionPageData transactionPageData = transactionService.getTransactions(page, cardBrand);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transactions successfully fetched", transactionPageData));
     }
