@@ -19,7 +19,6 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
-    @SuppressWarnings("ReassignedVariable")
     public TransactionPageData getTransactions(Integer page) {
         if (page == null) return getAllTransactions();
         return getTransactionsByPage(page, pageSize);
