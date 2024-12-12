@@ -2,6 +2,7 @@ package foi.air.szokpt.transactionmng.controllers;
 
 import foi.air.szokpt.transactionmng.dtos.responses.ApiResponse;
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
+import foi.air.szokpt.transactionmng.entities.Transaction;
 import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.enums.TrxType;
 import foi.air.szokpt.transactionmng.services.TransactionService;
@@ -11,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,5 +42,12 @@ public class TransactionController {
                 page, cardBrand, trxType, before, after, amountGreaterThan, amountLessThan);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transactions successfully fetched", transactionPageData));
+    }
+
+    @GetMapping("transactions/{id}")
+    public ResponseEntity<ApiResponse<Transaction>> getTransaction(@PathVariable int id){
+        Transaction transaction = transactionService.getTransaction(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
     }
 }
