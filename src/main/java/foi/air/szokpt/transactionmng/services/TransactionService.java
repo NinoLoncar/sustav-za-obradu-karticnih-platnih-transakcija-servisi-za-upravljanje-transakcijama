@@ -4,6 +4,7 @@ import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
 import foi.air.szokpt.transactionmng.entities.Transaction;
 import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.enums.TrxType;
+import foi.air.szokpt.transactionmng.exceptions.NotFoundException;
 import foi.air.szokpt.transactionmng.repositories.TransactionRepository;
 import foi.air.szokpt.transactionmng.specs.TransactionSpecs;
 import org.slf4j.Logger;
@@ -70,6 +71,10 @@ public class TransactionService {
                 transactionPage.getNumber() + 1,
                 transactionPage.getTotalPages()
         );
+    }
+
+    public Transaction getTransaction(int id){
+        return transactionRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     private int calculatePageIndex(int page, int pageSize) {

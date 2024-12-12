@@ -2,6 +2,7 @@ package foi.air.szokpt.transactionmng.exceptions;
 
 import foi.air.szokpt.transactionmng.dtos.responses.ApiResponse;
 import foi.air.szokpt.transactionmng.util.ApiResponseUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,5 +19,11 @@ public class GlobalExceptionHandler {
             return ResponseEntity.badRequest().body(ApiResponseUtil.failure("Invalid date format"));
         }
         return ResponseEntity.badRequest().body(ApiResponseUtil.failure("Invalid parameter value"));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex) {
+        return new ResponseEntity<>(ApiResponseUtil.failure("Resource not found"),
+                HttpStatus.NOT_FOUND);
     }
 }
