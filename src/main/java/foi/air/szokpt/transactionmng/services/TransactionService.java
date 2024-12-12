@@ -36,16 +36,16 @@ public class TransactionService {
             LocalDateTime before,
             LocalDateTime after,
             BigDecimal amountGreaterThan,
-            BigDecimal amountLessThan) {
+            BigDecimal amountLessThan, Boolean processed) {
 
         Specification<Transaction> spec = Specification
                 .where(TransactionSpecs.hasCardBrand(cardBrand))
                 .and(TransactionSpecs.hasTrxType(trxType))
                 .and(TransactionSpecs.beforeDateTime(before))
-                .and(TransactionSpecs.afterDateTime(after)
-                        .and(TransactionSpecs.amountGreaterThan(amountGreaterThan))
-                        .and(TransactionSpecs.amountLessThan(amountLessThan))
-                );
+                .and(TransactionSpecs.afterDateTime(after))
+                .and(TransactionSpecs.amountGreaterThan(amountGreaterThan))
+                .and(TransactionSpecs.amountLessThan(amountLessThan))
+                .and(TransactionSpecs.isProcessed(processed));
         if (page == null) return getAllTransactions(spec);
         return getTransactionsByPage(page, pageSize, spec);
     }
