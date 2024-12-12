@@ -53,4 +53,11 @@ public class TransactionSpecs {
                         root.get("amount"), amountLessThan
                 );
     }
+
+    public static Specification<Transaction> isProcessed(Boolean processed) {
+        return (root, query, builder) ->
+                processed == null ? builder.conjunction() : builder.equal(
+                        root.get("processed"), processed
+                );
+    }
 }
