@@ -96,10 +96,8 @@ public class TransactionService {
     }
 
     private void saveTransactionUpdate(Transaction existingTransaction, Transaction newTransactionData){
-        existingTransaction.setCurrency(newTransactionData.getCurrency());
         existingTransaction.setAmount(newTransactionData.getAmount());
         existingTransaction.setTransactionTimestamp(newTransactionData.getTransactionTimestamp());
-        existingTransaction.setCardBrand(newTransactionData.getCardBrand());
         transactionRepository.save(existingTransaction);
     }
 
