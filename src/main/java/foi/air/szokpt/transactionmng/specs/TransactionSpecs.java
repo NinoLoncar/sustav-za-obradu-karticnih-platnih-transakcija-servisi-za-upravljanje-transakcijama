@@ -18,11 +18,10 @@ public class TransactionSpecs {
 
     }
 
-    public static Specification<Transaction> hasTrxType(TrxType trxType) {
+    public static Specification<Transaction> hasTrxType(List<TrxType> trxTypes) {
         return (root, query, builder) ->
-                trxType == null ? builder.conjunction() : builder.equal(
-                        root.get("trxType"), trxType
-                );
+                trxTypes == null  || trxTypes.isEmpty() ? builder.conjunction() :
+                        root.get("trxType").in(trxTypes);
     }
 
     public static Specification<Transaction> beforeDateTime(LocalDateTime before) {

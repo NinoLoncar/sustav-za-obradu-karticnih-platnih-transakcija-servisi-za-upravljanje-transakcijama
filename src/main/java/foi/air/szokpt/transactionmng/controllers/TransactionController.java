@@ -33,8 +33,8 @@ public class TransactionController {
     @GetMapping("/transactions")
     public ResponseEntity<ApiResponse<TransactionPageData>> getTransactions(
             @RequestParam(required = false) Integer page,
-            @RequestParam(name = "trx_type", required = false) TrxType trxType,
             @RequestParam(name = "card_brand", required = false) List<CardBrand> cardBrand,
+            @RequestParam(name = "trx_type", required = false) List<TrxType> trxType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime before,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime after,
             @RequestParam(required = false, name = "amount_greater_than") BigDecimal amountGreaterThan,

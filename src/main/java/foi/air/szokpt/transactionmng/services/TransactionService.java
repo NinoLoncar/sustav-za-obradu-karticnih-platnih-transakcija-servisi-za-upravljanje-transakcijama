@@ -31,8 +31,8 @@ public class TransactionService {
 
     public TransactionPageData getTransactions(
             Integer page,
-            TrxType trxType,
             List<CardBrand> cardBrand,
+            List<TrxType> trxType,
             LocalDateTime before,
             LocalDateTime after,
             BigDecimal amountGreaterThan,
