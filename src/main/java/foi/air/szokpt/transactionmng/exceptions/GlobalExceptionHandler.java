@@ -26,4 +26,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ApiResponseUtil.failure("Resource not found"),
                 HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handleValidationException(ValidationException ex) {
+        return new ResponseEntity<>(ApiResponseUtil.failure(ex.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
 }

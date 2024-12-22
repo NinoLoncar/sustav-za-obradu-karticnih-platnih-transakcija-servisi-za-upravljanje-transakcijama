@@ -7,14 +7,12 @@ import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.enums.TrxType;
 import foi.air.szokpt.transactionmng.services.TransactionService;
 import foi.air.szokpt.transactionmng.util.ApiResponseUtil;
+import foi.air.szokpt.transactionmng.util.Authorizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,10 +21,12 @@ import java.time.LocalDateTime;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final Authorizer authorizer;
 
     @Autowired
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, Authorizer authorizer) {
         this.transactionService = transactionService;
+        this.authorizer = authorizer;
     }
 
     @GetMapping("/transactions")
@@ -51,5 +51,17 @@ public class TransactionController {
         Transaction transaction = transactionService.getTransaction(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
+    }
+
+    @PutMapping("transactions/{id}")
+    public ResponseEntity<ApiResponse<Void>> updateTransaction(
+            @PathVariable int id,
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody Transaction newTransactionData) {
+
+        authorizer.verifyToken(authorizationHeader);
+        transactionService.updateTransaction(id, newTransactionData);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponseUtil.success("Transaction successfully updated."));
     }
 }

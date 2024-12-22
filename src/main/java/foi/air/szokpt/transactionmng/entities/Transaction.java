@@ -113,7 +113,7 @@ public class Transaction {
         this.installmentsNumber = installmentsNumber;
     }
 
-    public void setInstallmentsNumber(InstallmentsCreditor installmentsCreditor) {
+    public void setInstallmentsCreditor(InstallmentsCreditor installmentsCreditor) {
         this.installmentsCreditor = installmentsCreditor;
     }
 

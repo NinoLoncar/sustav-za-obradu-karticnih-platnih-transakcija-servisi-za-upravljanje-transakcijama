@@ -7,8 +7,10 @@ import foi.air.szokpt.transactionmng.enums.TrxType;
 import foi.air.szokpt.transactionmng.exceptions.NotFoundException;
 import foi.air.szokpt.transactionmng.repositories.TransactionRepository;
 import foi.air.szokpt.transactionmng.specs.TransactionSpecs;
+import foi.air.szokpt.transactionmng.util.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +20,19 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionService {
     private static final Logger log = LoggerFactory.getLogger(TransactionService.class);
     final int pageSize = 15;
     private final TransactionRepository transactionRepository;
+    private final Validator<Transaction> transactionValidator;
 
-    public TransactionService(TransactionRepository transactionRepository) {
+    public TransactionService(TransactionRepository transactionRepository,
+                              @Qualifier("transactionDataValidator") Validator<Transaction> transactionValidator) {
         this.transactionRepository = transactionRepository;
+        this.transactionValidator = transactionValidator;
     }
 
     public TransactionPageData getTransactions(
@@ -75,6 +81,24 @@ public class TransactionService {
 
     public Transaction getTransaction(int id){
         return transactionRepository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
+    public void updateTransaction(int id, Transaction newTransactionData){
+        Optional<Transaction> optionalExistingTransaction = transactionRepository.findById(id);
+        if(optionalExistingTransaction.isPresent()){
+            newTransactionData.setId(id);
+            transactionValidator.validateData(newTransactionData);
+            Transaction existingTransaction = optionalExistingTransaction.get();
+            saveTransactionUpdate(existingTransaction, newTransactionData);
+        }else{
+            throw new NotFoundException();
+        }
+    }
+
+    private void saveTransactionUpdate(Transaction existingTransaction, Transaction newTransactionData){
+        existingTransaction.setAmount(newTransactionData.getAmount());
+        existingTransaction.setTransactionTimestamp(newTransactionData.getTransactionTimestamp());
+        transactionRepository.save(existingTransaction);
     }
 
     private int calculatePageIndex(int page, int pageSize) {
