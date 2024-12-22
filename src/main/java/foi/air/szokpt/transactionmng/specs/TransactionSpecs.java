@@ -7,21 +7,21 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TransactionSpecs {
 
-    public static Specification<Transaction> hasCardBrand(CardBrand cardBrand) {
+    public static Specification<Transaction> hasCardBrand(List<CardBrand> cardBrands) {
         return (root, query, builder) ->
-                cardBrand == null ? builder.conjunction() : builder.equal(
-                        root.get("cardBrand"), cardBrand
-                );
+                cardBrands == null || cardBrands.isEmpty() ? builder.conjunction() :
+                        root.get("cardBrand").in(cardBrands);
+
     }
 
-    public static Specification<Transaction> hasTrxType(TrxType trxType) {
+    public static Specification<Transaction> hasTrxType(List<TrxType> trxTypes) {
         return (root, query, builder) ->
-                trxType == null ? builder.conjunction() : builder.equal(
-                        root.get("trxType"), trxType
-                );
+                trxTypes == null  || trxTypes.isEmpty() ? builder.conjunction() :
+                        root.get("trxType").in(trxTypes);
     }
 
     public static Specification<Transaction> beforeDateTime(LocalDateTime before) {
