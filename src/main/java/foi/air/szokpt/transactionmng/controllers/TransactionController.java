@@ -58,11 +58,22 @@ public class TransactionController {
     public ResponseEntity<ApiResponse<Void>> updateTransaction(
             @PathVariable int id,
             @RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody Transaction newTransactionData) {
-
+            @RequestBody Transaction newTransactionData
+    ) {
         authorizer.verifyToken(authorizationHeader);
         transactionService.updateTransaction(id, newTransactionData);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.success("Transaction successfully updated."));
+    }
+
+    @GetMapping("transactions/start-data-refinement")
+    public ResponseEntity<ApiResponse<Void>> startDataRefinement(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime from,
+            @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime to
+            ){
+        authorizer.verifyToken(authorizationHeader);
+        transactionService.startDataRefinement(from, to);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponseUtil.success("Data refinement started."));
     }
 }
