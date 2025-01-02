@@ -1,9 +1,12 @@
 package foi.air.szokpt.transactionmng.services;
 
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
+import foi.air.szokpt.transactionmng.entities.RawTransactionData;
 import foi.air.szokpt.transactionmng.entities.Transaction;
 import foi.air.szokpt.transactionmng.enums.CardBrand;
+import foi.air.szokpt.transactionmng.enums.InstallmentsCreditor;
 import foi.air.szokpt.transactionmng.enums.TrxType;
+import foi.air.szokpt.transactionmng.exceptions.ExternalServiceException;
 import foi.air.szokpt.transactionmng.exceptions.NotFoundException;
 import foi.air.szokpt.transactionmng.repositories.TransactionRepository;
 import foi.air.szokpt.transactionmng.specs.TransactionSpecs;
@@ -11,16 +14,21 @@ import foi.air.szokpt.transactionmng.util.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -28,11 +36,13 @@ public class TransactionService {
     final int pageSize = 15;
     private final TransactionRepository transactionRepository;
     private final Validator<Transaction> transactionValidator;
+    private final RestTemplate restTemplate;
 
     public TransactionService(TransactionRepository transactionRepository,
-                              @Qualifier("transactionDataValidator") Validator<Transaction> transactionValidator) {
+                              @Qualifier("transactionDataValidator") Validator<Transaction> transactionValidator, RestTemplate restTemplate) {
         this.transactionRepository = transactionRepository;
         this.transactionValidator = transactionValidator;
+        this.restTemplate = restTemplate;
     }
 
     public TransactionPageData getTransactions(
@@ -79,23 +89,23 @@ public class TransactionService {
         );
     }
 
-    public Transaction getTransaction(int id){
+    public Transaction getTransaction(int id) {
         return transactionRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    public void updateTransaction(int id, Transaction newTransactionData){
+    public void updateTransaction(int id, Transaction newTransactionData) {
         Optional<Transaction> optionalExistingTransaction = transactionRepository.findById(id);
-        if(optionalExistingTransaction.isPresent()){
+        if (optionalExistingTransaction.isPresent()) {
             newTransactionData.setId(id);
             transactionValidator.validateData(newTransactionData);
             Transaction existingTransaction = optionalExistingTransaction.get();
             saveTransactionUpdate(existingTransaction, newTransactionData);
-        }else{
+        } else {
             throw new NotFoundException();
         }
     }
 
-    private void saveTransactionUpdate(Transaction existingTransaction, Transaction newTransactionData){
+    private void saveTransactionUpdate(Transaction existingTransaction, Transaction newTransactionData) {
         existingTransaction.setAmount(newTransactionData.getAmount());
         existingTransaction.setTransactionTimestamp(newTransactionData.getTransactionTimestamp());
         transactionRepository.save(existingTransaction);
@@ -105,5 +115,53 @@ public class TransactionService {
         long totalItems = transactionRepository.count();
         int totalPages = (int) Math.ceil((double) totalItems / pageSize);
         return Math.max(1, Math.min(page, totalPages));
+    }
+
+    public void startDataRefinement(LocalDateTime form, LocalDateTime to) {
+        List<RawTransactionData> rawTransactions = getRawTransactions(form, to);
+
+        List<Transaction> refinedTransactions = refineRawTransactions(rawTransactions);
+        saveTransactions(refinedTransactions);
+    }
+
+    private List<RawTransactionData> getRawTransactions(LocalDateTime from, LocalDateTime to) {
+        String url = String.format("http://46.202.155.53:8082/transactions?from=%s&to=%s", from, to);
+        try {
+            ResponseEntity<List<RawTransactionData>> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<RawTransactionData>>() {
+                    }
+            );
+
+            return response.getBody();
+        }catch(Exception e){
+            throw new ExternalServiceException(e.getMessage());
+        }
+    }
+
+    private List<Transaction> refineRawTransactions(List<RawTransactionData> rawTransactions) {
+        return rawTransactions.stream().map(
+                rawTransaction -> {
+                    Transaction transaction = new Transaction();
+                    transaction.setAmount(rawTransaction.getAmount());
+                    transaction.setCurrency(rawTransaction.getCurrency());
+                    transaction.setTrxType(TrxType.valueOf(rawTransaction.getTrxType()));
+                    transaction.setInstallmentsNumber(rawTransaction.getInstallmentsNumber());
+                    transaction.setInstallmentsCreditor(InstallmentsCreditor.valueOf(rawTransaction.getInstallmentsCreditor()));
+                    transaction.setCardBrand(CardBrand.valueOf(rawTransaction.getCardBrand()));
+                    transaction.setTransactionTimestamp(rawTransaction.getTransactionTimestamp());
+                    transaction.setMaskedPan(rawTransaction.getMaskedPan());
+                    transaction.setPinUsed(rawTransaction.getPinUsed());
+                    transaction.setResponseCode(rawTransaction.getResponseCode());
+                    transaction.setProcessed(false);
+
+                    return transaction;
+                }).collect(Collectors.toList());
+    }
+
+    private void saveTransactions(List<Transaction> transactions){
+        transactionRepository.saveAll(transactions);
     }
 }
