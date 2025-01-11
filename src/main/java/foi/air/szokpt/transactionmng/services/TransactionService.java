@@ -1,12 +1,12 @@
 package foi.air.szokpt.transactionmng.services;
 
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
-import foi.air.szokpt.transactionmng.entities.RawTransactionData;
+import foi.air.szokpt.transactionmng.entities.RawTransaction;
+import foi.air.szokpt.transactionmng.entities.Tid;
 import foi.air.szokpt.transactionmng.entities.Transaction;
 import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.enums.InstallmentsCreditor;
 import foi.air.szokpt.transactionmng.enums.TrxType;
-import foi.air.szokpt.transactionmng.exceptions.ExternalServiceException;
 import foi.air.szokpt.transactionmng.exceptions.NotFoundException;
 import foi.air.szokpt.transactionmng.repositories.TransactionRepository;
 import foi.air.szokpt.transactionmng.specs.TransactionSpecs;
@@ -14,13 +14,10 @@ import foi.air.szokpt.transactionmng.util.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -93,10 +91,10 @@ public class TransactionService {
         return transactionRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    public void updateTransaction(int id, Transaction newTransactionData) {
-        Optional<Transaction> optionalExistingTransaction = transactionRepository.findById(id);
+    public void updateTransaction(UUID guid, Transaction newTransactionData) {
+        Optional<Transaction> optionalExistingTransaction = transactionRepository.findByGuid(guid);
         if (optionalExistingTransaction.isPresent()) {
-            newTransactionData.setId(id);
+            newTransactionData.setGuid(guid);
             transactionValidator.validateData(newTransactionData);
             Transaction existingTransaction = optionalExistingTransaction.get();
             saveTransactionUpdate(existingTransaction, newTransactionData);
@@ -117,34 +115,22 @@ public class TransactionService {
         return Math.max(1, Math.min(page, totalPages));
     }
 
-    public void startDataRefinement(LocalDateTime form, LocalDateTime to) {
-        List<RawTransactionData> rawTransactions = getRawTransactions(form, to);
+    public void saveTransactions(List<RawTransaction> rawTransactions, Tid tid) {
+        List<Transaction> transactions = refineRawTransactions(rawTransactions);
 
-        List<Transaction> refinedTransactions = refineRawTransactions(rawTransactions);
-        saveTransactions(refinedTransactions);
+        transactions.forEach(transaction -> {
+            if (!transactionRepository.existsByGuid(transaction.getGuid())) {
+                transaction.setTid(tid);
+                transactionRepository.save(transaction);
+            }
+        });
     }
 
-    private List<RawTransactionData> getRawTransactions(LocalDateTime from, LocalDateTime to) {
-        String url = String.format("http://46.202.155.53:8082/transactions?from=%s&to=%s", from, to);
-        try {
-            ResponseEntity<List<RawTransactionData>> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<RawTransactionData>>() {
-                    }
-            );
-
-            return response.getBody();
-        }catch(Exception e){
-            throw new ExternalServiceException(e.getMessage());
-        }
-    }
-
-    private List<Transaction> refineRawTransactions(List<RawTransactionData> rawTransactions) {
+    private List<Transaction> refineRawTransactions(List<RawTransaction> rawTransactions) {
         return rawTransactions.stream().map(
                 rawTransaction -> {
                     Transaction transaction = new Transaction();
+                    transaction.setGuid(rawTransaction.getGuid());
                     transaction.setAmount(rawTransaction.getAmount());
                     transaction.setCurrency(rawTransaction.getCurrency());
                     transaction.setTrxType(TrxType.valueOf(rawTransaction.getTrxType()));
@@ -155,13 +141,10 @@ public class TransactionService {
                     transaction.setMaskedPan(rawTransaction.getMaskedPan());
                     transaction.setPinUsed(rawTransaction.getPinUsed());
                     transaction.setResponseCode(rawTransaction.getResponseCode());
+                    transaction.setApprovalCode(rawTransaction.getApprovalCode());
                     transaction.setProcessed(false);
 
                     return transaction;
                 }).collect(Collectors.toList());
-    }
-
-    private void saveTransactions(List<Transaction> transactions){
-        transactionRepository.saveAll(transactions);
     }
 }
