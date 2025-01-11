@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.lang.NonNull;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Integer>,
         JpaSpecificationExecutor<Transaction> {
@@ -15,4 +16,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     Page<Transaction> findAll(@NonNull Pageable pageable);
 
     Optional<Transaction> findById(int id);
+
+    Optional<Transaction> findByGuid(UUID guid);
+
+    boolean existsByGuid(UUID guid);
 }
