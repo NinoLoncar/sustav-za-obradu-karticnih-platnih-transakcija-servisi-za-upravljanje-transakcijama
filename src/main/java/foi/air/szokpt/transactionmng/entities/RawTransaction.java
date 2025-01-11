@@ -1,35 +1,78 @@
 package foi.air.szokpt.transactionmng.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-public class RawTransactionData {
+public class RawTransaction {
 
     private String posTid;
-    private String hostTid;
-    private String hostMid;
-    private BigDecimal amount;
-    private String currency;
-    private String trxType;
-    private Integer installmentsNumber;
-    private String installmentsCreditor;
-    private Integer bankHostId;
-    private String cardBrand;
-    private LocalDateTime transactionTimestamp;
-    private String maskedPan;
-    private Boolean pinUsed;
-    private String responseCode;
-    private String approvalCode;
-    private String rrn;
-    private String emv1;
-    private String emv2;
-    private String psn;
-    private String guid;
 
-    public RawTransactionData(String posTid, String hostTid, String hostMid, BigDecimal amount, String currency,
-                              String trxType, Integer installmentsNumber, String installmentsCreditor, Integer bankHostId,
-                              String cardBrand, LocalDateTime transactionTimestamp, String maskedPan, Boolean pinUsed,
-                              String responseCode, String approvalCode, String rrn, String emv1, String emv2, String psn, String guid) {
+    @JsonProperty("host_tid")
+    private String hostTid;
+
+    @JsonProperty("host_mid")
+    private String hostMid;
+
+    @JsonProperty("amount")
+    private BigDecimal amount;
+
+    @JsonProperty("currency")
+    private String currency;
+
+    @JsonProperty("trx_type")
+    private String trxType;
+
+    @JsonProperty("installments_number")
+    private Integer installmentsNumber;
+
+    @JsonProperty("installments_creditor")
+    private String installmentsCreditor;
+
+    @JsonProperty("bank_host_id")
+    private Integer bankHostId;
+
+    @JsonProperty("card_brand")
+    private String cardBrand;
+
+    @JsonProperty("transaction_timestamp")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime transactionTimestamp;
+
+    @JsonProperty("masked_pan")
+    private String maskedPan;
+
+    @JsonProperty("pin_used")
+    private Boolean pinUsed;
+
+    @JsonProperty("response_code")
+    private String responseCode;
+
+    @JsonProperty("approval_code")
+    private String approvalCode;
+
+    @JsonProperty("rrn")
+    private String rrn;
+
+    @JsonProperty("emv_1")
+    private String emv1;
+
+    @JsonProperty("emv_2")
+    private String emv2;
+
+    @JsonProperty("psn")
+    private String psn;
+
+    @JsonProperty("guid")
+    private UUID guid;
+
+    public RawTransaction(String posTid, String hostTid, String hostMid, BigDecimal amount, String currency,
+                          String trxType, Integer installmentsNumber, String installmentsCreditor, Integer bankHostId,
+                          String cardBrand, LocalDateTime transactionTimestamp, String maskedPan, Boolean pinUsed,
+                          String responseCode, String approvalCode, String rrn, String emv1, String emv2, String psn, UUID guid) {
         this.posTid = posTid;
         this.hostTid = hostTid;
         this.hostMid = hostMid;
@@ -204,11 +247,11 @@ public class RawTransactionData {
         this.psn = psn;
     }
 
-    public String getGuid() {
+    public UUID getGuid() {
         return guid;
     }
 
-    public void setGuid(String guid) {
+    public void setGuid(UUID guid) {
         this.guid = guid;
     }
 }
