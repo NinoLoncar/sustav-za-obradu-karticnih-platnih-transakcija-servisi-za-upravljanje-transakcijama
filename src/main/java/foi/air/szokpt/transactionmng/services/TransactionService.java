@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,13 +33,11 @@ public class TransactionService {
     final int pageSize = 15;
     private final TransactionRepository transactionRepository;
     private final Validator<Transaction> transactionValidator;
-    private final RestTemplate restTemplate;
 
     public TransactionService(TransactionRepository transactionRepository,
-                              @Qualifier("transactionDataValidator") Validator<Transaction> transactionValidator, RestTemplate restTemplate) {
+                              @Qualifier("transactionDataValidator") Validator<Transaction> transactionValidator) {
         this.transactionRepository = transactionRepository;
         this.transactionValidator = transactionValidator;
-        this.restTemplate = restTemplate;
     }
 
     public TransactionPageData getTransactions(
