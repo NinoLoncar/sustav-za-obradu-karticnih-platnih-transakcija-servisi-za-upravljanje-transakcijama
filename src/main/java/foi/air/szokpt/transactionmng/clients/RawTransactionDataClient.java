@@ -1,7 +1,7 @@
 package foi.air.szokpt.transactionmng.clients;
 
+import foi.air.szokpt.transactionmng.dtos.responses.RawMerchant;
 import foi.air.szokpt.transactionmng.dtos.responses.RawTransactionsResponseData;
-import foi.air.szokpt.transactionmng.entities.RawMerchant;
 import foi.air.szokpt.transactionmng.exceptions.ExternalServiceException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
