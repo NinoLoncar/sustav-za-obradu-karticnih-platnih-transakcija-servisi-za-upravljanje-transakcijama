@@ -1,4 +1,4 @@
-package foi.air.szokpt.transactionmng.entities;
+package foi.air.szokpt.transactionmng.dtos.responses;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
