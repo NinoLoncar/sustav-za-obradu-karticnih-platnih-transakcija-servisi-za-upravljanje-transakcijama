@@ -12,7 +12,7 @@ public class CardBrandConverter extends EnumConverter<CardBrand> {
     }
 
     protected CardBrand getInvalid() {
-        return CardBrand.Invalid;
+        return CardBrand.INVALID;
     }
 
     protected Class<CardBrand> getEnumType() {

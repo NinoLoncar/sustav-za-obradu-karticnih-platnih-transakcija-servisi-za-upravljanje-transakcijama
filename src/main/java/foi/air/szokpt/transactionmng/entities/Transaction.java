@@ -1,6 +1,8 @@
 package foi.air.szokpt.transactionmng.entities;
 
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import foi.air.szokpt.transactionmng.enums.CardBrand;
 import foi.air.szokpt.transactionmng.enums.InstallmentsCreditor;
 import foi.air.szokpt.transactionmng.enums.TrxType;
@@ -8,58 +10,76 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "transactions")
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "guid")
+    private UUID guid;
 
-    @Column(name = "amount", nullable = false, precision = 20, scale = 2)
+    @Column(name = "amount")
+    @JsonProperty("amount")
     private BigDecimal amount;
 
-    @Column(name = "currency", nullable = false)
+    @Column(name = "currency")
+    @JsonProperty("currency")
     private String currency;
 
-    @Column(name = "trx_type", nullable = false)
+    @Column(name = "trx_type")
+    @JsonProperty("trx_type")
     @Enumerated(EnumType.STRING)
     private TrxType trxType;
 
-    @Column(name = "installments_number", nullable = false)
-    private Integer installmentsNumber;
+    @Column(name = "installments_number")
+    @JsonProperty("installments_number")
+    private int installmentsNumber;
 
-    @Column(name = "installments_creditor", nullable = false)
+    @Column(name = "installments_creditor")
+    @JsonProperty("installments_creditor")
     @Enumerated(EnumType.STRING)
     private InstallmentsCreditor installmentsCreditor;
 
-    @Column(name = "card_brand", nullable = false)
+    @Column(name = "card_brand")
+    @JsonProperty("card_brand")
     @Enumerated(EnumType.STRING)
     private CardBrand cardBrand;
 
-    @Column(name = "transaction_timestamp", nullable = false)
+    @Column(name = "transaction_timestamp")
+    @JsonProperty("transaction_timestamp")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime transactionTimestamp;
 
-    @Column(name = "masked_pan", nullable = false)
+    @Column(name = "masked_pan")
+    @JsonProperty("masked_pan")
     private String maskedPan;
 
-    @Column(name = "pin_used", nullable = false)
-    private Boolean pinUsed;
+    @Column(name = "pin_used")
+    @JsonProperty("pin_used")
+    private boolean pinUsed;
 
-    @Column(name = "response_code", nullable = false)
+    @Column(name = "response_code")
+    @JsonProperty("response_code")
     private String responseCode;
 
-    @Column(name = "processed", nullable = false)
+    @Column(name = "approval_code")
+    @JsonProperty("approval_code")
+    private String approvalCode;
+
+    @Column(name = "processed")
+    @JsonProperty("processed")
     private Boolean processed;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pos_tid")
+    private Tid tid;
 
     public Transaction() {
     }
 
-    public Transaction(BigDecimal amount, String currency,
-                       TrxType trxType, Integer installmentsNumber, InstallmentsCreditor installmentsCreditor,
-                       CardBrand cardBrand, LocalDateTime transactionTimestamp,
-                       String maskedPan, Boolean pinUsed, String responseCode, Boolean processed) {
+    public Transaction(UUID guid, BigDecimal amount, String currency, TrxType trxType, int installmentsNumber, InstallmentsCreditor installmentsCreditor, CardBrand cardBrand, LocalDateTime transactionTimestamp, String maskedPan, boolean pinUsed, String responseCode, String approvalCode, Boolean processed) {
+        this.guid = guid;
         this.amount = amount;
         this.currency = currency;
         this.trxType = trxType;
@@ -70,16 +90,18 @@ public class Transaction {
         this.maskedPan = maskedPan;
         this.pinUsed = pinUsed;
         this.responseCode = responseCode;
+        this.approvalCode = approvalCode;
         this.processed = processed;
     }
 
-    public Integer getId() {
-        return id;
+    public UUID getGuid() {
+        return guid;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setGuid(UUID guid) {
+        this.guid = guid;
     }
+
 
     public BigDecimal getAmount() {
         return amount;
@@ -105,20 +127,20 @@ public class Transaction {
         this.trxType = trxType;
     }
 
-    public Integer getInstallmentsNumber() {
+    public int getInstallmentsNumber() {
         return installmentsNumber;
     }
 
-    public void setInstallmentsNumber(Integer installmentsNumber) {
+    public void setInstallmentsNumber(int installmentsNumber) {
         this.installmentsNumber = installmentsNumber;
-    }
-
-    public void setInstallmentsCreditor(InstallmentsCreditor installmentsCreditor) {
-        this.installmentsCreditor = installmentsCreditor;
     }
 
     public InstallmentsCreditor getInstallmentsCreditor() {
         return installmentsCreditor;
+    }
+
+    public void setInstallmentsCreditor(InstallmentsCreditor installmentsCreditor) {
+        this.installmentsCreditor = installmentsCreditor;
     }
 
     public CardBrand getCardBrand() {
@@ -145,11 +167,11 @@ public class Transaction {
         this.maskedPan = maskedPan;
     }
 
-    public Boolean getPinUsed() {
+    public boolean isPinUsed() {
         return pinUsed;
     }
 
-    public void setPinUsed(Boolean pinUsed) {
+    public void setPinUsed(boolean pinUsed) {
         this.pinUsed = pinUsed;
     }
 
@@ -161,11 +183,27 @@ public class Transaction {
         this.responseCode = responseCode;
     }
 
+    public String getApprovalCode() {
+        return approvalCode;
+    }
+
+    public void setApprovalCode(String approvalCode) {
+        this.approvalCode = approvalCode;
+    }
+
     public Boolean getProcessed() {
         return processed;
     }
 
-    public void setProcessed(Boolean wasProcessed) {
-        this.processed = wasProcessed;
+    public void setProcessed(Boolean processed) {
+        this.processed =  processed;
+    }
+
+    public Tid getTid() {
+        return tid;
+    }
+
+    public void setTid(Tid tid) {
+        this.tid = tid;
     }
 }

@@ -1,12 +1,13 @@
 package foi.air.szokpt.transactionmng.enums;
 
 public enum CardBrand {
-    Visa("visa"),
-    MasterCard("mastercard"),
-    Diners("diners"),
-    Discover("discover"),
-    Maestro("maestro"),
-    Invalid("invalid");
+    VISA("visa"),
+    MASTERCARD("mastercard"),
+    DINERS("diners"),
+    DISCOVER("discover"),
+    MAESTRO("maestro"),
+    AMEX("amex"),
+    INVALID("invalid");
 
     private final String name;
 

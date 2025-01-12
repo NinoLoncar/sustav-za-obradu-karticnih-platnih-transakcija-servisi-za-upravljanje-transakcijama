@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class TransactionController {
@@ -54,14 +55,14 @@ public class TransactionController {
                 .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
     }
 
-    @PutMapping("transactions/{id}")
+    @PutMapping("transactions/{guid}")
     public ResponseEntity<ApiResponse<Void>> updateTransaction(
-            @PathVariable int id,
+            @PathVariable UUID guid,
             @RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody Transaction newTransactionData) {
-
+            @RequestBody Transaction newTransactionData
+    ) {
         authorizer.verifyToken(authorizationHeader);
-        transactionService.updateTransaction(id, newTransactionData);
+        transactionService.updateTransaction(guid, newTransactionData);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.success("Transaction successfully updated."));
     }
