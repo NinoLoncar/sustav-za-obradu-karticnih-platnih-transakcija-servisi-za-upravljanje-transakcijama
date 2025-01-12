@@ -1,5 +1,6 @@
 package foi.air.szokpt.transactionmng.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -20,6 +21,7 @@ public class Merchant {
 
 
     @OneToMany(mappedBy = "merchant", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Mid> mids;
 
     public Merchant() {
