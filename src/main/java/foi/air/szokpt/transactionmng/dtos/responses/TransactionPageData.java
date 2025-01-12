@@ -3,21 +3,21 @@ package foi.air.szokpt.transactionmng.dtos.responses;
 import java.util.List;
 
 public class TransactionPageData{
-    private List<TransactionData> transactions;
+    private List<TransactionDataResponse> transactions;
     private int currentPage;
     private int totalPages;
 
-    public TransactionPageData(List<TransactionData> transactions, int currentPage, int totalPages) {
+    public TransactionPageData(List<TransactionDataResponse> transactions, int currentPage, int totalPages) {
         this.transactions = transactions;
         this.currentPage = currentPage;
         this.totalPages = totalPages;
     }
 
-    public List<TransactionData> getTransactions() {
+    public List<TransactionDataResponse> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(List<TransactionData> transactions) {
+    public void setTransactions(List<TransactionDataResponse> transactions) {
         this.transactions = transactions;
     }
 

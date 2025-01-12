@@ -1,7 +1,7 @@
 package foi.air.szokpt.transactionmng.services;
 
 import foi.air.szokpt.transactionmng.dtos.responses.RawTransaction;
-import foi.air.szokpt.transactionmng.dtos.responses.TransactionData;
+import foi.air.szokpt.transactionmng.dtos.responses.TransactionDataResponse;
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
 import foi.air.szokpt.transactionmng.entities.Tid;
 import foi.air.szokpt.transactionmng.entities.Transaction;
@@ -65,7 +65,7 @@ public class TransactionService {
     private TransactionPageData getAllTransactions(
             Specification<Transaction> spec) {
         List<Transaction> allTransactions = transactionRepository.findAll(spec);
-        List<TransactionData> allTransactionsData = convertToTransactionData(allTransactions);
+        List<TransactionDataResponse> allTransactionsData = convertToTransactionData(allTransactions);
         return new TransactionPageData(allTransactionsData, 0, 0);
     }
 
@@ -79,7 +79,7 @@ public class TransactionService {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
         Page<Transaction> transactionPage = transactionRepository
                 .findAll(spec, pageable);
-        List<TransactionData> transactionDataList = convertToTransactionData(transactionPage.getContent());
+        List<TransactionDataResponse> transactionDataList = convertToTransactionData(transactionPage.getContent());
 
         return new TransactionPageData(
                 transactionDataList,
@@ -88,17 +88,17 @@ public class TransactionService {
         );
     }
 
-    private List<TransactionData> convertToTransactionData(List<Transaction> transactions) {
+    private List<TransactionDataResponse> convertToTransactionData(List<Transaction> transactions) {
         return transactions.stream()
                 .map(this::convertToTransactionData)
                 .collect(Collectors.toList());
     }
 
-    private TransactionData convertToTransactionData(Transaction transaction) {
-        return new TransactionData(transaction);  // Use the constructor that accepts a Transaction
+    private TransactionDataResponse convertToTransactionData(Transaction transaction) {
+        return new TransactionDataResponse(transaction);  // Use the constructor that accepts a Transaction
     }
 
-    public TransactionData getTransaction(UUID guid) {
+    public TransactionDataResponse getTransaction(UUID guid) {
         return convertToTransactionData( transactionRepository.findByGuid(guid).orElseThrow(NotFoundException::new));
     }
 

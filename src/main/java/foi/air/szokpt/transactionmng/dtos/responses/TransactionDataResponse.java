@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class TransactionData {
+public class TransactionDataResponse {
     @JsonProperty("guid")
     private UUID guid;
 
@@ -57,10 +57,10 @@ public class TransactionData {
     @JsonProperty("processed")
     private Boolean processed;
 
-    public TransactionData() {
+    public TransactionDataResponse() {
     }
 
-    public TransactionData(UUID guid, BigDecimal amount, String currency, TrxType trxType, int installmentsNumber, InstallmentsCreditor installmentsCreditor, CardBrand cardBrand, LocalDateTime transactionTimestamp, String maskedPan, boolean pinUsed, String responseCode, String approvalCode, Boolean processed) {
+    public TransactionDataResponse(UUID guid, BigDecimal amount, String currency, TrxType trxType, int installmentsNumber, InstallmentsCreditor installmentsCreditor, CardBrand cardBrand, LocalDateTime transactionTimestamp, String maskedPan, boolean pinUsed, String responseCode, String approvalCode, Boolean processed) {
         this.guid = guid;
         this.amount = amount;
         this.currency = currency;
@@ -76,7 +76,7 @@ public class TransactionData {
         this.processed = processed;
     }
 
-    public TransactionData(Transaction transaction) {
+    public TransactionDataResponse(Transaction transaction) {
         this.guid = transaction.getGuid();
         this.amount = transaction.getAmount();
         this.currency = transaction.getCurrency();

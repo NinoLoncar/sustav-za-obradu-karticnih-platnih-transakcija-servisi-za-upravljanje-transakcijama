@@ -1,7 +1,7 @@
 package foi.air.szokpt.transactionmng.controllers;
 
 import foi.air.szokpt.transactionmng.dtos.responses.ApiResponse;
-import foi.air.szokpt.transactionmng.dtos.responses.TransactionData;
+import foi.air.szokpt.transactionmng.dtos.responses.TransactionDataResponse;
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
 import foi.air.szokpt.transactionmng.entities.Transaction;
 import foi.air.szokpt.transactionmng.enums.CardBrand;
@@ -50,8 +50,8 @@ public class TransactionController {
     }
 
     @GetMapping("transactions/{guid}")
-    public ResponseEntity<ApiResponse<TransactionData>> getTransaction(@PathVariable UUID guid){
-        TransactionData transaction = transactionService.getTransaction(guid);
+    public ResponseEntity<ApiResponse<TransactionDataResponse>> getTransaction(@PathVariable UUID guid){
+        TransactionDataResponse transaction = transactionService.getTransaction(guid);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
     }
