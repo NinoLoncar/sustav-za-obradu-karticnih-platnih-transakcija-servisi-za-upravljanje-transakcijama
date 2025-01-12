@@ -1,7 +1,6 @@
 package foi.air.szokpt.transactionmng.dtos.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import foi.air.szokpt.transactionmng.entities.RawMerchant;
 
 import java.util.List;
 

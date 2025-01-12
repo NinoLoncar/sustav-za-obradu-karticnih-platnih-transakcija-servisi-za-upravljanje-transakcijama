@@ -1,7 +1,7 @@
 package foi.air.szokpt.transactionmng.services;
 
+import foi.air.szokpt.transactionmng.dtos.responses.RawMerchant;
 import foi.air.szokpt.transactionmng.entities.Merchant;
-import foi.air.szokpt.transactionmng.entities.RawMerchant;
 import foi.air.szokpt.transactionmng.repositories.MerchantRepository;
 import org.springframework.stereotype.Service;
 

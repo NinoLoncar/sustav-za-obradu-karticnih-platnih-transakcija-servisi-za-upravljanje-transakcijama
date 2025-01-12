@@ -1,8 +1,8 @@
 package foi.air.szokpt.transactionmng.services;
 
+import foi.air.szokpt.transactionmng.dtos.responses.RawMid;
 import foi.air.szokpt.transactionmng.entities.Merchant;
 import foi.air.szokpt.transactionmng.entities.Mid;
-import foi.air.szokpt.transactionmng.entities.RawMid;
 import foi.air.szokpt.transactionmng.repositories.MidRepository;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,8 @@
 package foi.air.szokpt.transactionmng.services;
 
+import foi.air.szokpt.transactionmng.dtos.responses.RawTransaction;
+import foi.air.szokpt.transactionmng.dtos.responses.TransactionData;
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
-import foi.air.szokpt.transactionmng.entities.RawTransaction;
 import foi.air.szokpt.transactionmng.entities.Tid;
 import foi.air.szokpt.transactionmng.entities.Transaction;
 import foi.air.szokpt.transactionmng.enums.CardBrand;
@@ -64,7 +65,8 @@ public class TransactionService {
     private TransactionPageData getAllTransactions(
             Specification<Transaction> spec) {
         List<Transaction> allTransactions = transactionRepository.findAll(spec);
-        return new TransactionPageData(allTransactions, 0, 0);
+        List<TransactionData> allTransactionsData = convertToTransactionData(allTransactions);
+        return new TransactionPageData(allTransactionsData, 0, 0);
     }
 
     private TransactionPageData getTransactionsByPage(
@@ -77,15 +79,27 @@ public class TransactionService {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
         Page<Transaction> transactionPage = transactionRepository
                 .findAll(spec, pageable);
+        List<TransactionData> transactionDataList = convertToTransactionData(transactionPage.getContent());
+
         return new TransactionPageData(
-                transactionPage.getContent(),
+                transactionDataList,
                 transactionPage.getNumber() + 1,
                 transactionPage.getTotalPages()
         );
     }
 
-    public Transaction getTransaction(int id) {
-        return transactionRepository.findById(id).orElseThrow(NotFoundException::new);
+    private List<TransactionData> convertToTransactionData(List<Transaction> transactions) {
+        return transactions.stream()
+                .map(this::convertToTransactionData)
+                .collect(Collectors.toList());
+    }
+
+    private TransactionData convertToTransactionData(Transaction transaction) {
+        return new TransactionData(transaction);  // Use the constructor that accepts a Transaction
+    }
+
+    public TransactionData getTransaction(UUID guid) {
+        return convertToTransactionData( transactionRepository.findByGuid(guid).orElseThrow(NotFoundException::new));
     }
 
     public void updateTransaction(UUID guid, Transaction newTransactionData) {

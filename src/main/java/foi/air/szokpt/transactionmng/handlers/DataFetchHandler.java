@@ -1,7 +1,13 @@
 package foi.air.szokpt.transactionmng.handlers;
 
 import foi.air.szokpt.transactionmng.clients.RawTransactionDataClient;
-import foi.air.szokpt.transactionmng.entities.*;
+import foi.air.szokpt.transactionmng.dtos.responses.RawMerchant;
+import foi.air.szokpt.transactionmng.dtos.responses.RawMid;
+import foi.air.szokpt.transactionmng.dtos.responses.RawTid;
+import foi.air.szokpt.transactionmng.dtos.responses.RawTransaction;
+import foi.air.szokpt.transactionmng.entities.Merchant;
+import foi.air.szokpt.transactionmng.entities.Mid;
+import foi.air.szokpt.transactionmng.entities.Tid;
 import foi.air.szokpt.transactionmng.services.MerchantService;
 import foi.air.szokpt.transactionmng.services.MidService;
 import foi.air.szokpt.transactionmng.services.TidService;
