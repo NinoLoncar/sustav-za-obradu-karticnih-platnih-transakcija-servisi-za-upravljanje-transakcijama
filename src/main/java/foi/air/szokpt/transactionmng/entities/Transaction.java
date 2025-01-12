@@ -78,7 +78,19 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(UUID guid, BigDecimal amount, String currency, TrxType trxType, int installmentsNumber, InstallmentsCreditor installmentsCreditor, CardBrand cardBrand, LocalDateTime transactionTimestamp, String maskedPan, boolean pinUsed, String responseCode, String approvalCode, Boolean processed) {
+    public Transaction(UUID guid,
+                       BigDecimal amount,
+                       String currency,
+                       TrxType trxType,
+                       int installmentsNumber,
+                       InstallmentsCreditor installmentsCreditor,
+                       CardBrand cardBrand,
+                       LocalDateTime transactionTimestamp,
+                       String maskedPan,
+                       boolean pinUsed,
+                       String responseCode,
+                       String approvalCode,
+                       Boolean processed) {
         this.guid = guid;
         this.amount = amount;
         this.currency = currency;
@@ -196,7 +208,7 @@ public class Transaction {
     }
 
     public void setProcessed(Boolean processed) {
-        this.processed =  processed;
+        this.processed = processed;
     }
 
     public Tid getTid() {

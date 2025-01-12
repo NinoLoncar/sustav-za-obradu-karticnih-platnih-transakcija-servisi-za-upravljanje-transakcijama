@@ -57,7 +57,15 @@ public class Mid {
     public Mid() {
     }
 
-    public Mid(String posMid, String salePointName, String city, String stateCode, String typeCode, String locationCode, String postalCode, String countryCode, String securityCode) {
+    public Mid(String posMid,
+               String salePointName,
+               String city,
+               String stateCode,
+               String typeCode,
+               String locationCode,
+               String postalCode,
+               String countryCode,
+               String securityCode) {
         this.posMid = posMid;
         this.salePointName = salePointName;
         this.city = city;
