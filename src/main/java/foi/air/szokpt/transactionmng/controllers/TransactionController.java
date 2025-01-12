@@ -67,4 +67,12 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.success("Transaction successfully updated."));
     }
+
+    @GetMapping("detailed-transactions/{guid}")
+    public ResponseEntity<ApiResponse<Transaction>> getDetailedTransaction(@PathVariable UUID guid){
+        Transaction transaction = transactionService.getDetailedTransaction(guid);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
+    }
+
 }
