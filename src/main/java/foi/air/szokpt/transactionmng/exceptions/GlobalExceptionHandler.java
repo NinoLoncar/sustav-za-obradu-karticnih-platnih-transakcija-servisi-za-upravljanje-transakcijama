@@ -16,9 +16,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<Object>> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         if (ex.getRequiredType() != null && ex.getRequiredType().equals(LocalDateTime.class)) {
-            return ResponseEntity.badRequest().body(ApiResponseUtil.failure("INVALID date format"));
+            return ResponseEntity.badRequest().body(ApiResponseUtil.failure("Invalid date format"));
         }
-        return ResponseEntity.badRequest().body(ApiResponseUtil.failure("INVALID parameter value"));
+        return ResponseEntity.badRequest().body(ApiResponseUtil.failure("Invalid parameter value"));
     }
 
     @ExceptionHandler(NotFoundException.class)
