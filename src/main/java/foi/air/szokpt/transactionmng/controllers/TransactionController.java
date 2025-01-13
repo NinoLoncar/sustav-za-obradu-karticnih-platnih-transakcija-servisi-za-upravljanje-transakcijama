@@ -50,7 +50,7 @@ public class TransactionController {
     }
 
     @GetMapping("transactions/{guid}")
-    public ResponseEntity<ApiResponse<TransactionDataResponse>> getTransaction(@PathVariable UUID guid){
+    public ResponseEntity<ApiResponse<TransactionDataResponse>> getTransaction(@PathVariable UUID guid) {
         TransactionDataResponse transaction = transactionService.getTransaction(guid);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
@@ -69,10 +69,19 @@ public class TransactionController {
     }
 
     @GetMapping("detailed-transactions/{guid}")
-    public ResponseEntity<ApiResponse<Transaction>> getDetailedTransaction(@PathVariable UUID guid){
+    public ResponseEntity<ApiResponse<Transaction>> getDetailedTransaction(@PathVariable UUID guid) {
         Transaction transaction = transactionService.getDetailedTransaction(guid);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
     }
+
+    @GetMapping("detailed-transactions")
+    public ResponseEntity<ApiResponse<Transaction>> getDetailedTransactions(
+            @RequestParam(name = "guid", required = true) List<UUID> guids) {
+        List<Transaction> transaction = transactionService.getDetailedTransactions(guids);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
+    }
+
 
 }
