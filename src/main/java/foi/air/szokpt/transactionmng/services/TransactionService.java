@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,7 +97,7 @@ public class TransactionService {
     }
 
     public TransactionDataResponse getTransaction(UUID guid) {
-        return convertToTransactionData( transactionRepository.findByGuid(guid).orElseThrow(NotFoundException::new));
+        return convertToTransactionData(transactionRepository.findByGuid(guid).orElseThrow(NotFoundException::new));
     }
 
     public void updateTransaction(UUID guid, Transaction newTransactionData) {
@@ -163,5 +161,15 @@ public class TransactionService {
         return transactionRepository
                 .findTransactionWithDetailsByGuid(guid)
                 .orElseThrow(NotFoundException::new);
+    }
+
+    public List<Transaction> getDetailedTransactions(List<UUID> guids) {
+        List<Transaction> transactions = new ArrayList<>();
+        Set<UUID> uniqueGuids = new HashSet<>(guids);
+        for (UUID guid : uniqueGuids) {
+            Optional<Transaction> transaction = transactionRepository.findTransactionWithDetailsByGuid(guid);
+            transaction.ifPresent(transactions::add);
+        }
+        return transactions;
     }
 }
