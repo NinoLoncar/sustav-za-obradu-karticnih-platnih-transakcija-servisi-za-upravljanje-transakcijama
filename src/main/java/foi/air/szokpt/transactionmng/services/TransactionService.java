@@ -95,7 +95,7 @@ public class TransactionService {
     }
 
     private TransactionDataResponse convertToTransactionData(Transaction transaction) {
-        return new TransactionDataResponse(transaction);  // Use the constructor that accepts a Transaction
+        return new TransactionDataResponse(transaction);
     }
 
     public TransactionDataResponse getTransaction(UUID guid) {
@@ -157,5 +157,11 @@ public class TransactionService {
 
                     return transaction;
                 }).collect(Collectors.toList());
+    }
+
+    public Transaction getDetailedTransaction(UUID guid) {
+        return transactionRepository
+                .findTransactionWithDetailsByGuid(guid)
+                .orElseThrow(NotFoundException::new);
     }
 }

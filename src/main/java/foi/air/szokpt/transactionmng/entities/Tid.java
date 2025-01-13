@@ -1,5 +1,6 @@
 package foi.air.szokpt.transactionmng.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -18,6 +19,7 @@ public class Tid {
     private Mid mid;
 
     @OneToMany(mappedBy = "tid", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Transaction> transactions;
 
     public Tid() {
