@@ -1,5 +1,6 @@
 package foi.air.szokpt.transactionmng.controllers;
 
+import com.fasterxml.jackson.databind.annotation.NoClass;
 import foi.air.szokpt.transactionmng.dtos.responses.ApiResponse;
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionDataResponse;
 import foi.air.szokpt.transactionmng.dtos.responses.TransactionPageData;
@@ -43,7 +44,7 @@ public class TransactionController {
             @RequestParam(required = false, name = "amount_less_than") BigDecimal amountLessThan,
             @RequestParam(required = false) Boolean processed,
             @RequestHeader("Authorization") String authorizationHeader
-            ) {
+    ) {
         authorizer.verifyToken(authorizationHeader);
         TransactionPageData transactionPageData = transactionService.getTransactions(
                 page, cardBrand, trxType, before, after, amountGreaterThan,
@@ -56,7 +57,7 @@ public class TransactionController {
     public ResponseEntity<ApiResponse<TransactionDataResponse>> getTransaction(
             @PathVariable UUID guid,
             @RequestHeader("Authorization") String authorizationHeader
-            ){
+    ) {
         authorizer.verifyToken(authorizationHeader);
         TransactionDataResponse transaction = transactionService.getTransaction(guid);
         return ResponseEntity.status(HttpStatus.OK)
@@ -90,5 +91,12 @@ public class TransactionController {
                 .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
     }
 
+    @PostMapping("processed-transactions")
+    public ResponseEntity<ApiResponse<NoClass>> postProcessedTransactions(
+            @RequestBody List<UUID> transactions) {
+        transactionService.updateProcessedTransactions(transactions);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponseUtil.success("Transaction successfully updated"));
+    }
 
 }
