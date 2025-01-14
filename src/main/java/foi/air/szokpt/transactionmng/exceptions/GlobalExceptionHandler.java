@@ -39,4 +39,10 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(ExternalServiceException.class)
+    public ResponseEntity<Object> handleValidationException(ExternalServiceException ex) {
+        return new ResponseEntity<>(ApiResponseUtil.failure("External service unavailable"),
+                HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
 }
