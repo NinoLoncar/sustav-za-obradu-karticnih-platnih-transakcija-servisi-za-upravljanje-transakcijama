@@ -5,11 +5,9 @@ import java.util.List;
 public class TokenValidationResponse {
     private boolean success;
     private String message;
-    private List<Data> data;
+    private List<Role> data;
 
-
-
-    public TokenValidationResponse(boolean success, String message, List<Data> data) {
+    public TokenValidationResponse(boolean success, String message, List<Role> data) {
         this.success = success;
         this.message = message;
         this.data = data;
@@ -27,11 +25,11 @@ public class TokenValidationResponse {
         this.success = success;
     }
 
-    public List<Data> getData() {
+    public List<Role> getData() {
         return data;
     }
 
-    public void setData(List<Data> data) {
+    public void setData(List<Role> data) {
         this.data = data;
     }
 
@@ -42,7 +40,7 @@ public class TokenValidationResponse {
         return null;
     }
 
-    public static class Data {
+    public static class Role {
         private String role;
 
         public String getRole() {
