@@ -32,4 +32,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ApiResponseUtil.failure(ex.getMessage()),
                 HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(TokenValidationException.class)
+    public ResponseEntity<Object> handleValidationException(TokenValidationException ex) {
+        return new ResponseEntity<>(ApiResponseUtil.failure("Invalid or expired token."),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ExternalServiceException.class)
+    public ResponseEntity<Object> handleValidationException(ExternalServiceException ex) {
+        return new ResponseEntity<>(ApiResponseUtil.failure("External service unavailable"),
+                HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
 }
