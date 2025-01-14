@@ -41,7 +41,10 @@ public class TransactionController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss") LocalDateTime after,
             @RequestParam(required = false, name = "amount_greater_than") BigDecimal amountGreaterThan,
             @RequestParam(required = false, name = "amount_less_than") BigDecimal amountLessThan,
-            @RequestParam(required = false) Boolean processed) {
+            @RequestParam(required = false) Boolean processed,
+            @RequestHeader("Authorization") String authorizationHeader
+            ) {
+        authorizer.verifyToken(authorizationHeader);
         TransactionPageData transactionPageData = transactionService.getTransactions(
                 page, cardBrand, trxType, before, after, amountGreaterThan,
                 amountLessThan, processed);
@@ -50,7 +53,11 @@ public class TransactionController {
     }
 
     @GetMapping("transactions/{guid}")
-    public ResponseEntity<ApiResponse<TransactionDataResponse>> getTransaction(@PathVariable UUID guid) {
+    public ResponseEntity<ApiResponse<TransactionDataResponse>> getTransaction(
+            @PathVariable UUID guid,
+            @RequestHeader("Authorization") String authorizationHeader
+            ){
+        authorizer.verifyToken(authorizationHeader);
         TransactionDataResponse transaction = transactionService.getTransaction(guid);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.successWithData("Transaction successfully fetched", transaction));
