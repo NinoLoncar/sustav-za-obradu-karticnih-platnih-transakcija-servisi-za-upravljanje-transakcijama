@@ -174,6 +174,6 @@ public class TransactionService {
     }
 
     public void updateProcessedTransactions(List<UUID> guids) {
-        transactionRepository.updateProcessedStatus(false, guids);
+        transactionRepository.updateProcessedStatus(true, guids);
     }
 }
