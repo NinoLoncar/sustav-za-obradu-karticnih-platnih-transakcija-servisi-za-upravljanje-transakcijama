@@ -93,8 +93,9 @@ public class TransactionController {
 
     @PutMapping("processed-transactions")
     public ResponseEntity<ApiResponse<NoClass>> updateProcessedStatus(
-            @RequestBody List<UUID> transactions) {
-        transactionService.updateProcessedTransactions(transactions);
+            @RequestBody List<UUID> transactions,
+            @RequestParam Boolean processed) {
+        transactionService.updateProcessedTransactions(transactions, processed);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponseUtil.success("Transaction successfully updated"));
     }

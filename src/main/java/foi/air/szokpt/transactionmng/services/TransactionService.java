@@ -173,7 +173,7 @@ public class TransactionService {
         return transactions;
     }
 
-    public void updateProcessedTransactions(List<UUID> guids) {
-        transactionRepository.updateProcessedStatus(true, guids);
+    public void updateProcessedTransactions(List<UUID> guids, Boolean processed) {
+        transactionRepository.updateProcessedStatus(processed, guids);
     }
 }
