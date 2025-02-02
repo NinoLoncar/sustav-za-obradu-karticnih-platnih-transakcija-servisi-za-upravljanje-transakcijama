@@ -1,1 +1,1 @@
-# sustav-za-obradu-karticnih-platnih-transakcija-servisi-za-upravljanje-transakcijama
+# ssustav-za-obradu-karticnih-platnih-transakcija-servisi-za-upravljanje-transakcijama
